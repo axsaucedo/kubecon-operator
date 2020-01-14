@@ -13,6 +13,12 @@ endif
 
 all: manager
 
+create_kind:
+	kind create cluster --config kind/kind_config.yaml
+
+delete_kind:
+	kind delete cluster
+
 # Run tests
 test: generate fmt vet manifests
 	go test ./... -coverprofile cover.out
