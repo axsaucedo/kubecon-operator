@@ -1,0 +1,7 @@
+domain: seldon.io
+repo: kubecon
+resources:
+- group: webapp
+  kind: GuestBook
+  version: v1
+version: "2"
