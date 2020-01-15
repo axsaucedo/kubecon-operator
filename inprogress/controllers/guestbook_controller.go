@@ -1,4 +1,5 @@
 /*
+Copyright 2019 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,8 +38,9 @@ type GuestBookReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=webapp.seldon.io,resources=guestbooks,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=webapp.seldon.io,resources=guestbooks/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=webapp.metamagical.dev,resources=guestbooks,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=webapp.metamagical.dev,resources=guestbooks/status,verbs=get;update;patch
+
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=list;watch;get;patch
 // +kubebuilder:rbac:groups=core,resources=services,verbs=list;watch;get;patch
 
@@ -56,14 +58,17 @@ func (r *GuestBookReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	var redis webappv1.Redis
 	redisName := client.ObjectKey{Name: book.Spec.RedisName, Namespace: req.Namespace}
 	if err := r.Get(ctx, redisName, &redis); err != nil {
+		log.Error(err, "didn't get redis")
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
+
+	log.Info("got redis", "redis", redis.Name)
 
 	deployment, err := r.desiredDeployment(book, redis)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
-	svc, err := r.desiredServicevice(book)
+	svc, err := r.desiredService(book)
 	if err != nil {
 		return ctrl.Result{}, err
 	}

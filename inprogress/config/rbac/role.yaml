@@ -7,7 +7,25 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - webapp.seldon.io
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - webapp.metamagical.dev
   resources:
   - guestbooks
   verbs:
@@ -19,9 +37,29 @@ rules:
   - update
   - watch
 - apiGroups:
-  - webapp.seldon.io
+  - webapp.metamagical.dev
   resources:
   - guestbooks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - webapp.metamagical.dev
+  resources:
+  - redis
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - webapp.metamagical.dev
+  resources:
+  - redis/status
   verbs:
   - get
   - patch
